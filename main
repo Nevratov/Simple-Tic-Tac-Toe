@@ -1,0 +1,110 @@
+//Создание пустого поля
+val field = mutableListOf(
+    mutableListOf(' ', ' ', ' '),
+    mutableListOf(' ', ' ', ' '),
+    mutableListOf(' ', ' ', ' ')
+)
+
+//Учёт символов для проверки результата
+var endGame = 0
+var valueX = 0
+var valueO = 0
+var valueEmpty = 9
+
+//Проверка корректности ввода
+fun inputValid(player: Char) {
+    var okInput = true
+    while (okInput) {
+
+        val (o, x) = readln().split(" ")
+
+        try {
+            if (field[o.toInt() - 1][x.toInt() - 1] == ' ') {
+                field[o.toInt() - 1][x.toInt() - 1] = player
+                if (player == 'X') valueX++ else valueO++
+                valueEmpty--
+                printField()
+                resultGame()
+                okInput = false
+            } else {
+                println(("This cell is occupied! Choose another one!"))
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            println("Coordinates should be from 1 to 3!")
+        } catch (e: NumberFormatException) {
+            println("You should enter numbers!")
+        }
+    }
+}
+
+fun resultGame() {  // Результат игры, проверка победителя
+
+        if (field[0][0] == 'X' && field[0][1] == 'X' && field[0][2] == 'X' ||
+            field[1][0] == 'X' && field[1][1] == 'X' && field[1][2] == 'X' ||
+            field[2][0] == 'X' && field[2][1] == 'X' && field[2][2] == 'X'
+        ) {
+            println("X wins") // Х win по горизонтали
+            endGame++
+        } else if (field[0][0] == 'O' && field[0][1] == 'O' && field[0][2] == 'O' ||
+                   field[1][0] == 'O' && field[1][1] == 'O' && field[1][2] == 'O' ||
+                   field[2][0] == 'O' && field[2][1] == 'O' && field[2][2] == 'O'
+        ) {
+            println("O wins") // O win по горизонтали
+            endGame++
+        } else if (field[0][0] == 'X' && field[1][0] == 'X' && field[2][0] == 'X' ||
+                   field[0][1] == 'X' && field[1][1] == 'X' && field[2][1] == 'X' ||
+                   field[0][2] == 'X' && field[1][2] == 'X' && field[2][2] == 'X'
+        ) {
+            println("X wins") // Х win по вертикали
+            endGame++
+        } else if (field[0][0] == 'O' && field[1][0] == 'O' && field[2][0] == 'O' ||
+                   field[0][1] == 'O' && field[1][1] == 'O' && field[2][1] == 'O' ||
+                   field[0][2] == 'O' && field[1][2] == 'O' && field[2][2] == 'O'
+        ) {
+            println("O wins") // O win по вертикали
+            endGame++
+        } else if (field[0][0] == 'X' && field[1][1] == 'X' && field[2][2] == 'X' ||
+                   field[0][2] == 'X' && field[1][1] == 'X' && field[2][0] == 'X'
+        ) {
+            println("X wins") // Х win по диагонали
+            endGame++
+        } else if (field[0][0] == 'O' && field[1][1] == 'O' && field[2][2] == 'O' ||
+                   field[0][2] == 'O' && field[1][1] == 'O' && field[2][0] == 'O'
+        ) {
+            println("O wins") // O win по диагонали
+            endGame++
+        }
+    }
+
+fun printField() {
+    println("""
+---------
+| ${field[0][0]} ${field[0][1]} ${field[0][2]} |
+| ${field[1][0]} ${field[1][1]} ${field[1][2]} |
+| ${field[2][0]} ${field[2][1]} ${field[2][2]} |
+---------
+    """)
+}
+
+fun main() {
+
+    // Печать пустого поля
+    println("""
+---------
+|       |
+|       |
+|       |
+---------
+    """)
+
+    //Собираем игру
+    while (endGame == 0) { // для X
+        inputValid('X')
+        if (endGame == 1) return
+        if (valueEmpty == 0) {
+            println("Draw")
+            return
+        }
+        inputValid('O')
+    }
+}
